@@ -211,7 +211,7 @@ internal fun AutoSizeText(text: String, color: Color, maxSize: TextUnit, minSize
         modifier = modifier)
 }
 
-private enum class DashTool(val label: String) { RADAR("Radar"), DEVICE("Device"), LOCATOR("Device Locator"), MAP("Finds Map"), THREAT("Offensive Devices"), CHANNELS("Channel Analyzer"), SPECTRUM("Spectrum Analyzer") }
+private enum class DashTool(val label: String) { RADAR("Radar"), DEVICE("Device"), LOCATOR("Device Locator"), MAP("Finds Map"), THREAT("Offensive Devices"), CHANNELS("Channel Analyzer"), SPECTRUM("Spectrum Analyzer"), AXON("Axon Alert") }
 
 @Composable
 private fun LiveBanner(
@@ -570,9 +570,9 @@ fun Dashboard(
     val wifiColor = skin.wifiHex?.let { Color(it) } ?: accent
     val deep = Color(skin.deepHex)
 
-    val tools = if (beast is BeastState.Engaged) listOf(DashTool.RADAR, DashTool.DEVICE, DashTool.LOCATOR, DashTool.MAP, DashTool.THREAT, DashTool.CHANNELS, DashTool.SPECTRUM)
-                else listOf(DashTool.RADAR, DashTool.LOCATOR, DashTool.MAP, DashTool.THREAT, DashTool.CHANNELS, DashTool.SPECTRUM)
-    val tool = DashTool.values().getOrNull(toolOrd)?.takeIf { it in tools } ?: DashTool.RADAR
+    val tools = if (beast is BeastState.Engaged) listOf(DashTool.AXON, DashTool.RADAR, DashTool.DEVICE, DashTool.LOCATOR, DashTool.MAP, DashTool.THREAT, DashTool.CHANNELS, DashTool.SPECTRUM)
+                else listOf(DashTool.AXON, DashTool.RADAR, DashTool.LOCATOR, DashTool.MAP, DashTool.THREAT, DashTool.CHANNELS, DashTool.SPECTRUM)
+    val tool = DashTool.values().getOrNull(toolOrd)?.takeIf { it in tools } ?: DashTool.AXON
 
     var trackKey by rememberSaveable { mutableStateOf<String?>(null) }
     val listState = rememberLazyListState()
@@ -693,6 +693,7 @@ fun Dashboard(
                             DashTool.THREAT -> ThreatScopeTool(contacts, accent, onSelect = onSelect)
                             DashTool.CHANNELS -> ChannelAnalyzerTool(contacts, accent)
                             DashTool.SPECTRUM -> SpectrumAnalyzerTool(contacts, accent)
+                            DashTool.AXON -> AxonAlertTool(contacts)
                         }
 
                         if (tools.size > 1) {

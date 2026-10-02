@@ -300,7 +300,7 @@ private fun App(uiFontScale: Float = 1f, onUiFontScale: (Float) -> Unit = {}) {
 
     var seenCollapsed by remember { mutableStateOf(prefs.getBoolean("seen_collapsed", false)) }
 
-    var toolOrd by remember { mutableStateOf(prefs.getInt("tool_ord", 0)) }
+    var toolOrd by remember { mutableStateOf(prefs.getInt("tool_ord", -1)) }
 
     var buzzOnSpot by remember { mutableStateOf(prefs.getBoolean("buzz_on_spot", true)) }
     LaunchedEffect(buzzOnSpot) { vm.buzzOnSpot = buzzOnSpot }
