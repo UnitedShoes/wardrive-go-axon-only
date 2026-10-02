@@ -1,3 +1,14 @@
+# fork notes
+- **grab builds from github actions**
+- 100% vibe coded
+- removes all notification types, leaving only Axon alerts
+- added custom notification sound alerting to axon cameras, can be disabled in app settings
+- added new tool for visually alerting to Axon devices
+
+intended to be used as a police scanner while driving. some PD's axon body cameras are very reliably detected by Wardrive Go. External adapter + high gain roof antennas recommended!
+
+**grab builds from github actions**
+
 # Wardrive Go (Android)
 
 A passive wardriving app for Android. It maps Wi-Fi, Bluetooth, and cellular networks on a live map, and can upload discoveries to [WiGLE](https://wigle.net) and
