@@ -10,7 +10,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.rocketgod.wardrive"
+        applicationId = "com.rocketgod.wardrive.axon"
         minSdk = 26
         targetSdk = 36
         versionCode = 573

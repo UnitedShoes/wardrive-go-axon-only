@@ -40,7 +40,7 @@
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:label="Wardrive Go"
+        android:label="Wardrive Go Axon"
         android:supportsRtl="true"
         android:theme="@style/Theme.WarBLE">
 
