@@ -45,7 +45,7 @@ import java.io.InputStream
 
 enum class SendPhase { IDLE, WRITING, UPLOADING, SAVING, SENT }
 
-private const val SPOT_CHANNEL = "wardrive_spot"
+private const val SPOT_CHANNEL = "wardrive_spot_axon"
 
 class WarbleViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -72,12 +72,20 @@ class WarbleViewModel(app: Application) : AndroidViewModel(app) {
         if (Build.VERSION.SDK_INT >= 33 &&
             ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
+        nm.deleteNotificationChannel("wardrive_spot")
         if (nm.getNotificationChannel(SPOT_CHANNEL) == null) {
             nm.createNotificationChannel(NotificationChannel(SPOT_CHANNEL, "Spot alerts", NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "Buzzes when a notable device (camera, drone, tracker, Flipper) is first seen nearby. Mirrors to a paired watch."
                 enableVibration(true)
                 vibrationPattern = longArrayOf(0, 220, 120, 220)
                 setShowBadge(true)
+                setSound(
+                    android.net.Uri.parse("android.resource://${ctx.packageName}/${R.raw.axon_alert}"),
+                    android.media.AudioAttributes.Builder()
+                        .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
             })
         }
         val tap = PendingIntent.getActivity(
@@ -154,6 +162,7 @@ class WarbleViewModel(app: Application) : AndroidViewModel(app) {
             var atk = 0; var surv = 0; var trk = 0
             for (c in snap) {
                 val t = com.rocketgod.warble.classify.NotableDevices.threat(c.name, c.key, c.companyId, c.category) ?: continue
+                if (!t.label.startsWith("Axon", ignoreCase = true)) continue
                 when (t.lane) {
                     com.rocketgod.warble.classify.ThreatLane.ATTACK -> atk++
                     com.rocketgod.warble.classify.ThreatLane.SURVEILLANCE -> surv++
@@ -215,6 +224,7 @@ class WarbleViewModel(app: Application) : AndroidViewModel(app) {
 
         viewModelScope.launch {
             repo.notableSightings.collect { hit ->
+                if (!hit.brand.equals("Axon", ignoreCase = true)) return@collect
 
                 post(FeedEvent(FeedKind.SPOTTED, "", hit.banner, FeedTone.HOT, colorArgb = hit.category.colorArgb))
                 if (buzzOnSpot) buzzSpot(hit)
