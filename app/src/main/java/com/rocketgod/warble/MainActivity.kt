@@ -304,6 +304,8 @@ private fun App(uiFontScale: Float = 1f, onUiFontScale: (Float) -> Unit = {}) {
 
     var buzzOnSpot by remember { mutableStateOf(prefs.getBoolean("buzz_on_spot", true)) }
     LaunchedEffect(buzzOnSpot) { vm.buzzOnSpot = buzzOnSpot }
+    var customAlertSound by remember { mutableStateOf(prefs.getBoolean("custom_alert_sound", true)) }
+    LaunchedEffect(customAlertSound) { vm.customAlertSound = customAlertSound }
 
     var notificationsOn by remember { mutableStateOf(prefs.getBoolean("notifications_enabled", true)) }
     LaunchedEffect(notificationsOn) { vm.notificationsEnabled = notificationsOn }
@@ -1163,6 +1165,8 @@ private fun App(uiFontScale: Float = 1f, onUiFontScale: (Float) -> Unit = {}) {
                 onToolsOnTop = { toolsOnTop = it; prefs.edit().putBoolean("tools_on_top", it).apply() },
                 buzzOnSpot = buzzOnSpot,
                 onBuzzOnSpot = { buzzOnSpot = it; prefs.edit().putBoolean("buzz_on_spot", it).apply() },
+                customAlertSound = customAlertSound,
+                onCustomAlertSound = { customAlertSound = it; prefs.edit().putBoolean("custom_alert_sound", it).apply() },
                 notificationsOn = notificationsOn,
                 onNotificationsOn = { notificationsOn = it; prefs.edit().putBoolean("notifications_enabled", it).apply() },
                 offensiveBanners = com.rocketgod.warble.ui.UiFlags.offensiveBanners,

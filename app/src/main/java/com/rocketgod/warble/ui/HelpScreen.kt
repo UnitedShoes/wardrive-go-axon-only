@@ -86,6 +86,7 @@ fun HelpScreen(
     keepScreenOn: Boolean = true, onKeepScreenOn: (Boolean) -> Unit = {},
     toolsOnTop: Boolean = false, onToolsOnTop: (Boolean) -> Unit = {},
     buzzOnSpot: Boolean = true, onBuzzOnSpot: (Boolean) -> Unit = {},
+    customAlertSound: Boolean = true, onCustomAlertSound: (Boolean) -> Unit = {},
     notificationsOn: Boolean = true, onNotificationsOn: (Boolean) -> Unit = {},
     offensiveBanners: Boolean = true, onOffensiveBanners: (Boolean) -> Unit = {},
     captureBanners: Boolean = true, onCaptureBanners: (Boolean) -> Unit = {},
@@ -208,6 +209,8 @@ fun HelpScreen(
             SettingSwitch("System notifications", "Master switch for the app's system notifications — a notable device (camera, drone, tracker, Flipper) first seen nearby posts to your notification shade. Off = none. The scanning notification Android requires while running in the background is separate.", notificationsOn, true, accent, onNotificationsOn)
             Spacer(Modifier.height(8.dp))
             SettingSwitch("Buzz on spot", "Vibrate on those spot alerts. A paired Wear OS watch mirrors it, so your wrist taps. (Needs System notifications on.)", buzzOnSpot, true, accent, onBuzzOnSpot)
+            Spacer(Modifier.height(8.dp))
+            SettingSwitch("Custom Axon alert sound", "Play the custom Axon alert sound. Off = your phone's normal notification sound. (Needs System notifications on.)", customAlertSound, true, accent, onCustomAlertSound)
             Spacer(Modifier.height(14.dp))
             Text("IN-APP BANNERS", color = accent, fontFamily = Mono, fontWeight = FontWeight.Bold, fontSize = 13.sp)
             Text("The pop-down banner at the top of the dashboard. Choose which alerts drop down — any you turn off just keep the banner on its normal rotating info cards.",

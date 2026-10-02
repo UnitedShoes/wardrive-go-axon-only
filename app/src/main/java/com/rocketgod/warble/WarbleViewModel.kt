@@ -46,6 +46,7 @@ import java.io.InputStream
 enum class SendPhase { IDLE, WRITING, UPLOADING, SAVING, SENT }
 
 private const val SPOT_CHANNEL = "wardrive_spot_axon"
+private const val SPOT_CHANNEL_DEFAULT_SOUND = "wardrive_spot_axon_default"
 
 class WarbleViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -65,6 +66,8 @@ class WarbleViewModel(app: Application) : AndroidViewModel(app) {
 
     @Volatile var buzzOnSpot: Boolean = true
 
+    @Volatile var customAlertSound: Boolean = true
+
     private fun buzzSpot(hit: NotableHit) {
         if (!notificationsEnabled) return
         if (appInForeground) return
@@ -73,13 +76,14 @@ class WarbleViewModel(app: Application) : AndroidViewModel(app) {
             ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
         nm.deleteNotificationChannel("wardrive_spot")
-        if (nm.getNotificationChannel(SPOT_CHANNEL) == null) {
-            nm.createNotificationChannel(NotificationChannel(SPOT_CHANNEL, "Spot alerts", NotificationManager.IMPORTANCE_HIGH).apply {
+        val channelId = if (customAlertSound) SPOT_CHANNEL else SPOT_CHANNEL_DEFAULT_SOUND
+        if (nm.getNotificationChannel(channelId) == null) {
+            nm.createNotificationChannel(NotificationChannel(channelId, "Spot alerts", NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "Buzzes when a notable device (camera, drone, tracker, Flipper) is first seen nearby. Mirrors to a paired watch."
                 enableVibration(true)
                 vibrationPattern = longArrayOf(0, 220, 120, 220)
                 setShowBadge(true)
-                setSound(
+                if (customAlertSound) setSound(
                     android.net.Uri.parse("android.resource://${ctx.packageName}/${R.raw.axon_alert}"),
                     android.media.AudioAttributes.Builder()
                         .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
@@ -93,7 +97,7 @@ class WarbleViewModel(app: Application) : AndroidViewModel(app) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val title = hit.banner.ifBlank { hit.readable }
-        val n = Notification.Builder(ctx, SPOT_CHANNEL)
+        val n = Notification.Builder(ctx, channelId)
             .setContentTitle("Spotted: $title")
             .setContentText(hit.readable)
             .setSmallIcon(R.drawable.ic_stat_wardrive)
